@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, ContextManager, Protocol
 
 from camera import Camera, OCRLine, crop_frame, read_image, recognize, recognize_card
+from card_layout import CardLayout, CardLocator
 from settings import CameraSettings, Motors, Screen, ScreenView, Stroke
 
 if TYPE_CHECKING:
@@ -119,9 +120,26 @@ def recognized_text(lines: Sequence[OCRLine] | None) -> tuple[str, ...] | None:
     return tuple(line["text"] for line in lines)
 
 
-def read_screen(frame: MatLike, screen: Screen) -> list[OCRLine]:
-    lines = recognize_card(frame, screen.crop, screen.ocr_regions)
-    if screen.ocr_regions and screen.clear_lines and recognized_text(lines) not in screen.approved_cards:
+def card_layout(frame: MatLike, view: ScreenView, locator: CardLocator | None) -> CardLayout | None:
+    if view.anchor is None:
+        return CardLayout(view.crop, view.ocr_regions)
+    return locator.locate(frame, view) if locator is not None else None
+
+
+def read_card(frame: MatLike, layout: CardLayout | None, *, multiline_command: bool) -> list[OCRLine]:
+    if layout is None:
+        return []
+    return recognize_card(frame, layout.crop, layout.ocr_regions, multiline_command=multiline_command)
+
+
+def read_screen(frame: MatLike, screen: Screen, locator: CardLocator | None = None,
+                visual_check: Callable[[MatLike], bool] | None = None) -> list[OCRLine]:
+    layout = card_layout(frame, screen, locator)
+    lines = read_card(frame, layout, multiline_command=screen.anchor is not None)
+    if recognized_text(lines) in screen.approved_cards:
+        if visual_check is not None and layout is not None and not visual_check(crop_frame(frame, layout.crop)):
+            return []
+    elif screen.ocr_regions and screen.clear_lines:
         cleared = recognize(frame, screen.crop)
         if recognized_text(cleared) == tuple(screen.clear_lines):
             return cleared
@@ -171,18 +189,15 @@ def watch(screen: Screen, sample: Callable[[], Sequence[OCRLine] | None],
 
 
 def sample_frame(camera: Camera, screen: Screen,
-                 visual_check: Callable[[MatLike], bool] | None = None) -> list[OCRLine]:
+                 visual_check: Callable[[MatLike], bool] | None = None,
+                 locator: CardLocator | None = None) -> list[OCRLine]:
     capture = camera.frame()
     if capture is None:
         return []
-    frame = capture.frame
     try:
-        lines = read_screen(frame, screen)
+        lines = read_screen(capture.frame, screen, locator, visual_check)
     except subprocess.TimeoutExpired:
         return []
-    if visual_check is not None and recognized_text(lines) in screen.approved_cards:
-        if not visual_check(crop_frame(frame, screen.crop)):
-            return []
     return lines if time.monotonic() - capture.received_at <= 2 else []
 
 
@@ -199,17 +214,18 @@ class SimulatedKey:
             print(f"{self.name} up")
 
 
-def simulate(screen: Screen, images: Iterable[Path]) -> int:
+def simulate(screen: Screen, images: Iterable[Path], locator: CardLocator | None = None) -> int:
     frames = iter(images)
     gate = MatchGate(screen)
     for path in frames:
-        matched = gate.observe(read_screen(read_image(path), screen))
+        matched = gate.observe(read_screen(read_image(path), screen, locator))
         if matched is not None:
             print("Matched permission card in replay.")
 
             def confirm() -> bool:
                 next_path = next(frames, None)
-                return next_path is not None and recognized_text(read_screen(read_image(next_path), screen)) == matched
+                return (next_path is not None
+                        and recognized_text(read_screen(read_image(next_path), screen, locator)) == matched)
 
             if chord(SimulatedKey("Option"), SimulatedKey("Enter"), confirm):
                 return 0
@@ -283,20 +299,23 @@ def main() -> int:
 
     if args.command == "inspect-image":
         view = ScreenView.model_validate(config["screen"])
-        for line in recognize_card(read_image(args.image), view.crop, view.ocr_regions):
+        locator = CardLocator.load(view, args.config.parent)
+        frame = read_image(args.image)
+        for line in read_card(frame, card_layout(frame, view, locator), multiline_command=view.anchor is not None):
             print(f'{line["confidence"]:.2f}  {line["text"]}')
         return 0
 
     screen = Screen.model_validate(config["screen"])
+    locator = CardLocator.load(screen, args.config.parent)
     if args.command == "check-image":
-        lines = read_screen(read_image(args.image), screen)
+        lines = read_screen(read_image(args.image), screen, locator)
         for line in lines:
             print(f'{line["confidence"]:.2f}  {line["text"]}')
         matched = recognized_text(lines) in screen.approved_cards
         print("Permission card matched." if matched else "No configured permission card matched.")
         return 0 if matched else 3
     if args.command == "simulate":
-        return simulate(screen, args.images)
+        return simulate(screen, args.images, locator)
 
     if args.repeat and not screen.clear_lines:
         parser.error("--repeat requires a verified screen.clear_lines fingerprint.")
@@ -325,7 +344,7 @@ def main() -> int:
         motors = axes(stack.enter_context(open_brick()), strokes) if strokes is not None else None
 
         def sample() -> list[OCRLine]:
-            return sample_frame(camera, screen, visual_check)
+            return sample_frame(camera, screen, visual_check, locator)
 
         def act(matched: tuple[str, ...]) -> bool:
             if motors is None:

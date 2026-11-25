@@ -68,15 +68,17 @@ def recognize(frame: MatLike, crop: list[float], page_mode: int = 6) -> list[OCR
     return parse_tsv(result.stdout.decode())
 
 
-def recognize_card(frame: MatLike, crop: list[float], regions: Sequence[list[float]] = ()) -> list[OCRLine]:
+def recognize_card(frame: MatLike, crop: list[float], regions: Sequence[list[float]] = (),
+                   *, multiline_command: bool = False) -> list[OCRLine]:
     if not regions:
         return recognize(frame, crop)
     lines: list[OCRLine] = []
-    for region in regions:
-        result = recognize(frame, region, page_mode=7)
-        if len(result) != 1:
+    for index, region in enumerate(regions):
+        multiline = multiline_command and index == 1
+        result = recognize(frame, region, page_mode=6 if multiline else 7)
+        if not result or (not multiline and len(result) != 1):
             return []
-        lines.append(result[0])
+        lines.extend(result)
     return lines
 
 

@@ -63,7 +63,25 @@ The demo sends sample card images through the same OCR and recognition gate as t
    .venv/bin/python clicker.py watch local.json --live
    ```
 
-If full-card OCR merges the buttons or misses the approval label, set `screen.ocr_regions` to one single-line crop per entry in `screen.prompt_lines`, in the same order. A useful starting set is the card heading, full command, and Allow label. Each crop is a fraction of the full source frame, like `screen.crop`. The visual classifier still uses `screen.crop`. Test the individual lines on a saved image with `clicker.py check-image` before enabling the watcher.
+If the card stays in a fixed location and full-card OCR merges the buttons or misses the approval label, set `screen.ocr_regions` to one single-line crop per entry in `screen.prompt_lines`, in the same order. Each crop is a fraction of the full source frame, like `screen.crop`. Test the individual lines on a saved image with `clicker.py check-image` before enabling the watcher.
+
+### Find cards that move within the panel
+
+Set `screen.anchor` to enable a panel-wide search. Use a full reference image with a short command. Set `image` to its path relative to the config file, `panel` to the whole search area, and `heading` and `allow` to small crops around the card title and Allow button. Measure all crops as fractions of that full image.
+
+```json
+{
+  "image": "captures/reference.png",
+  "panel": [0.30, 0.10, 0.39, 0.73],
+  "heading": [0.341, 0.352, 0.123, 0.022],
+  "allow": [0.520, 0.450, 0.061, 0.032],
+  "minimum_score": 0.85
+}
+```
+
+Measure `screen.crop` and exactly three `screen.ocr_regions` in the same reference image. Use the full card for `crop` and the heading, command area, and Allow label for the three OCR regions. The heading and button locate the card horizontally and vertically. The distance between them determines how tall to make the command crop so OCR can read each displayed line. Include every line in the configured fingerprint in display order. When enabled, the visual classifier checks the relocated full card.
+
+The reference and live frames need the same resolution, camera position, and UI scale. Keep the full card inside the search panel. The watcher waits if either anchor is missing or has multiple possible matches.
 
 The watcher defaults to one match and five minutes. To rearm automatically, set `screen.clear_lines` to a stable OCR result from the same crop after the card clears, then add `--repeat`. A missing camera frame or unreadable card does not rearm it. To test the NXT separately, run `.venv/bin/python clicker.py brick` on the Linux host.
 
@@ -99,4 +117,4 @@ Install and run the Git hooks from the project directory with Python 3.11. The h
 make typecheck test demo model-demo
 ```
 
-Real screenshots and trained models are stored in the Git-ignored `captures/` directory. CI uses the committed synthetic fixtures.
+Real screenshots and trained models are stored in the Git-ignored `captures/` directory. CI uses synthetic fixtures, including generated panels with varying amounts of surrounding text and cards with one to eight command lines.
