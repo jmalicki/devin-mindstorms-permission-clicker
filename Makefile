@@ -1,12 +1,16 @@
-.PHONY: test demo model-demo typecheck
+.PHONY: test demo model-demo typecheck lego-guide
 
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
+PDF_PYTHON ?= $(PYTHON)
 
 test:
 	$(PYTHON) -m unittest -v
 
 typecheck:
 	$(PYTHON) -m ty check
+
+lego-guide:
+	$(PDF_PYTHON) tools/build_lego_guide.py
 
 demo:
 	$(PYTHON) clicker.py check-image demo/config.json demo/other-card.png || test $$? -eq 3

@@ -1,5 +1,14 @@
 # LEGO NXT Option–Enter keyboard presser
 
+The [illustrated assembly booklet](output/pdf/nxt-keyboard-presser.pdf) opens with the complete piece inventory for both modules. It includes nine numbered steps, wiring, and a bench test.
+
+To rebuild the PDF, install ReportLab into the project environment and run the build target. Set `PDF_PYTHON` to a different interpreter if it already has ReportLab installed.
+
+```sh
+.venv/bin/python -m pip install reportlab
+make lego-guide
+```
+
 Make two independently adjustable Technic lever modules. Port **A** holds Option while port **B** taps Enter. The dimensions below are starting points in Technic holes. Fit the stands to your keyboard and check the travel on the bench.
 
 ## Parts
