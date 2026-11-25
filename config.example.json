@@ -1,0 +1,14 @@
+{
+  "camera": {"device": "/dev/video0", "width": 1920, "height": 1080, "fps": 30, "pixel_format": "YUYV"},
+  "motors": {
+    "option": {"degrees": null, "power": 25},
+    "enter": {"degrees": null, "power": 25}
+  },
+  "screen": {
+    "crop": [0, 0, 1, 1],
+    "prompt_lines": [],
+    "additional_prompt_lines": [],
+    "ocr_regions": [],
+    "clear_lines": []
+  }
+}

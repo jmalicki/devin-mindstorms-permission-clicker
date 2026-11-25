@@ -1,0 +1,4 @@
+-r requirements.txt
+opencv-python-headless==4.14.0.94
+pre-commit==4.7.0
+ty==0.0.110
