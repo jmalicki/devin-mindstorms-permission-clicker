@@ -2,6 +2,8 @@
 
 Repeated Devin permission prompts can interrupt your workflow, and managed corporate laptops often restrict software installation. This project puts the whole setup outside the MacBook. An external camera watches the screen, a separate Linux computer recognizes configured Devin prompts, and a LEGO Mindstorms NXT robot physically presses **Option–Enter** on a real keyboard.
 
+The setup is built around an **Intel RealSense D415 or D435**. Its stereo depth pair has two eyes. Add one human with two more and you've got **four eyes**. The screen reader uses the camera's dedicated RGB stream. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
+
 ```text
 MacBook display ── light ──▶ RGB camera ── USB video ──▶ Linux host
 Linux host ── USB motor commands ──▶ NXT ── motor cables ──▶ two levers
