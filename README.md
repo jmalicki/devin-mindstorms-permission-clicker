@@ -1,6 +1,6 @@
 # Devin Mindstorms permission clicker
 
-You ask Devin to run the tests while you review a pull request. An hour later, you come back for the results. Devin is still waiting for permission to run the same command you approved yesterday. After a few rounds of this, you start checking on Devin in the middle of a diff, just in case. This project lets you choose which recurring requests a LEGO robot can approve on your behalf.
+You ask [Devin](https://devin.ai/), a coding agent, to run the tests while you review a pull request. An hour later, you come back for the results. Devin is still waiting for permission to run the same command you approved yesterday. After a few rounds of this, you start checking on Devin in the middle of a diff, just in case. This project lets you choose which recurring requests a LEGO robot can approve on your behalf.
 
 On some corporate-managed MacBooks, you can't install a helper app. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
 
