@@ -2,9 +2,13 @@
 
 You ask [Devin](https://devin.ai/), a coding agent, to run the tests while you review a pull request. An hour later, you come back for the results. Devin is still waiting for permission to run the same command you approved yesterday. After a few rounds of this, you start checking on Devin in the middle of a diff, just in case. This project lets you choose which recurring requests a LEGO robot can approve on your behalf.
 
-On some corporate-managed MacBooks, you can't install a helper app. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
+On some corporate-managed MacBooks, you can't install a helper app. The goal is to use just a camera and a LEGO Mindstorms NXT. The camera recognizes a configured card and tells the NXT to press **Option–Enter** on a real keyboard. This requires a camera that can boot its own recognition program and communicate directly with the brick.
 
-The setup is built around an **Intel RealSense D415 or D435**. The screen reader uses its dedicated RGB stream, and its stereo depth pair supplies the joke. Two eyes on the camera plus two on the operator give you a literal **four eyes**. Corporate security might even sign off, provided your policy allows automated approval for the commands you've chosen. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
+### Current prototype
+
+The software currently targets an **Intel RealSense D415 or D435** attached to a separate Linux computer. Those cameras compute stereo depth onboard and stream images over USB. The Linux computer reads the RGB stream, recognizes the card, and drives the NXT over its USB cable. Running recognition on a standalone camera and controlling the brick directly still need implementation and bench testing. [RealSense D400 datasheet](https://www.realsenseai.com/wp-content/uploads/2026/03/RealSense-D400-Series-Datasheet-Mar-2026.pdf)
+
+Two eyes on the stereo camera plus two on the operator give you a literal **four eyes**. Corporate security might even sign off, provided your policy allows automated approval for the commands you've chosen.
 
 ```mermaid
 flowchart TD
