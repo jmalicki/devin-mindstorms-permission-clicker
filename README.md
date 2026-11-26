@@ -2,7 +2,7 @@
 
 Say you ask Devin to run the tests and turn to a code review. When Devin asks for permission to run the same test command you approved yesterday, you have to put the review down, answer the request, and find your place again. If you've stepped away from your desk, you might come back an hour later expecting results and find that the tests never started. This project lets you choose which recurring permission cards a robot can approve for you.
 
-On a managed MacBook where you can't install a helper app, the robot can read the prompt and press the keys from outside the laptop. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
+On some corporate-managed MacBooks, you can't install a helper app. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
 
 The setup is built around an **Intel RealSense D415 or D435**. Its stereo depth pair has two eyes. Add one human with two more and you've got **four eyes**. The screen reader uses the camera's dedicated RGB stream. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
 
