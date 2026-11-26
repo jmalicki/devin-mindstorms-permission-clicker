@@ -6,10 +6,16 @@ On some corporate-managed MacBooks, you can't install a helper app. An external 
 
 The setup is built around an **Intel RealSense D415 or D435**. Its stereo depth pair has two eyes. Add one human with two more and you've got **four eyes**. The screen reader uses the camera's dedicated RGB stream. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
 
-```text
-MacBook display ── light ──▶ RGB camera ── USB video ──▶ Linux host
-Linux host ── USB motor commands ──▶ NXT ── motor cables ──▶ two levers
-Two levers ── physical Option–Enter ──▶ real keyboard ──▶ MacBook
+```mermaid
+flowchart TD
+    mac["MacBook running Devin"] -->|Light from display| camera["RealSense RGB camera"]
+    camera -->|USB video| linux["Linux host running OCR"]
+    linux -->|USB motor commands| nxt["Mindstorms NXT"]
+    nxt -->|Port A motor cable| option["Option lever"]
+    nxt -->|Port B motor cable| enter["Enter lever"]
+    option -->|Holds Option| keyboard["Physical keyboard"]
+    enter -->|Taps Enter| keyboard
+    keyboard -->|Option–Enter| mac
 ```
 
 [camera.py](camera.py) reads RGB frames through Linux V4L2 and sends a cropped grayscale frame to Tesseract's pretrained LSTM engine. [clicker.py](clicker.py) requires two consecutive matching reads, holds Option with motor A, and checks one more fresh camera frame before tapping Enter with B. It then releases Enter and Option. The Linux host handles all recognition and motor commands. [OpenCV VideoCapture](https://docs.opencv.org/4.x/d8/dfe/classcv_1_1VideoCapture.html) · [Tesseract neural OCR](https://tesseract-ocr.github.io/tessdoc/) · [NXT-Python USB setup](https://ni.srht.site/nxt-python/latest/installation.html)
