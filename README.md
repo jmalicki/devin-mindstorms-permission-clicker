@@ -4,7 +4,7 @@ You ask [Devin](https://devin.ai/), a coding agent, to run the tests while you r
 
 On some corporate-managed MacBooks, you can't install a helper app. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
 
-The setup is built around an **Intel RealSense D415 or D435**. Its stereo depth pair has two eyes. Add one human with two more and you've got **four eyes**. The screen reader uses the camera's dedicated RGB stream. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
+The setup is built around an **Intel RealSense D415 or D435**. The screen reader uses its dedicated RGB stream, and its stereo depth pair supplies the joke. Two eyes on the camera plus two on the operator give you a literal **four eyes**. Corporate security might even sign off, provided your policy allows automated approval for the commands you've chosen. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
 
 ```mermaid
 flowchart TD
