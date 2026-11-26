@@ -1,7 +1,16 @@
-.PHONY: test demo model-demo typecheck lego-guide
+.PHONY: test demo model-demo typecheck lego-guide esp32-test esp32-qemu
 
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 PDF_PYTHON ?= $(PYTHON)
+ESP32_QEMU ?= .build/esp32/qemu/bin/qemu-system-xtensa
+ESP32_FIRMWARE ?= .build/esp32/micropython.bin
+ESP32_SCENARIO ?= demo/esp32-replay.json
+
+esp32-test:
+	$(PYTHON) firmware/esp32/bench.py
+
+esp32-qemu:
+	$(PYTHON) tools/esp32_qemu.py --qemu "$(ESP32_QEMU)" --firmware "$(ESP32_FIRMWARE)" --scenario "$(ESP32_SCENARIO)"
 
 test:
 	$(PYTHON) -m unittest -v

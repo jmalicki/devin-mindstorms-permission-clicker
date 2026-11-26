@@ -23,4 +23,16 @@ jobs:
       - name: Lint and validate files
         run: pre-commit run --all-files
       - name: Run tests and offline demos
-        run: make test demo model-demo PYTHON=python
+        run: make test demo model-demo esp32-test PYTHON=python
+      - name: Boot the ESP32 replay bench in QEMU
+        run: |
+          sudo apt-get install -y libsdl2-2.0-0 libslirp0
+          mkdir -p .build/esp32
+          cd .build/esp32
+          curl -fLsS --retry 3 -o qemu.tar.xz https://github.com/espressif/qemu/releases/download/esp-develop-9.2.2-20261109/qemu-xtensa-softmmu-esp_develop_9.2.2_20261109-x86_64-linux-gnu.tar.xz
+          curl -fLsS --retry 3 -o micropython.bin https://micropython.org/resources/firmware/ESP32_GENERIC-20260824-v1.29.0.bin
+          echo 'fbc3bffa9fa71192847969a627a584aabe2e86d85bed4902a096ff06c2b8a815  qemu.tar.xz' | sha256sum -c -
+          echo 'e67ad6015a0a504c1fec9aa9bbf589d0432ed28e62546f4f8dd8a147f8bd95f6  micropython.bin' | sha256sum -c -
+          tar -xf qemu.tar.xz
+          cd ../..
+          make esp32-qemu PYTHON=python

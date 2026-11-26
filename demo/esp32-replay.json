@@ -1,0 +1,11 @@
+{
+  "cards": [["Run command?", "printf test", "Allow Once"]],
+  "events": [
+    [10, "frame", 1, 10, true, [["Run command?", 970], ["printf test", 950], ["Allow Once", 980]]],
+    [20, "frame", 2, 20, true, [["Run command?", 980], ["printf test", 960], ["Allow Once", 970]]],
+    [30, "ack"],
+    [40, "frame", 3, 40, true, [["Run command?", 980], ["printf other", 970], ["Allow Once", 980]]],
+    [150, "tick"]
+  ],
+  "expected_keys": ["Option down", "Option up"]
+}

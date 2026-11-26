@@ -4,11 +4,15 @@ You ask [Devin](https://devin.ai/), a coding agent, to run the tests while you r
 
 On some corporate-managed MacBooks, you can't install a helper app. The goal is to use just a camera and a LEGO Mindstorms NXT. The camera recognizes a configured card and tells the NXT to press **Option–Enter** on a real keyboard. This requires a camera that can boot its own recognition program and communicate directly with the brick.
 
-In the intended two-device design, the camera locates the card, reads the complete command, checks it against the configured cards, and confirms the same card across fresh frames. The NXT handles the motor sequence and encoder feedback. The link between them needs to support a fresh confirmation after Option goes down and before Enter is tapped.
+### Two-device design and simulator
+
+The standalone design targets a **Luxonis OAK-D-IoT** with a Myriad X vision processor and an ESP32. The Myriad X would locate and read the card. The ESP32 compares every line against configured cards, checks confidence and frame freshness, then directs the NXT. The brick holds Option and acknowledges the movement. A fresh matching frame authorizes the Enter tap. The brick releases the keys on its own deadline if the camera stops responding.
+
+The [ESP32 executable bench](firmware/esp32/README.md) cold-boots in Espressif's Xtensa QEMU with mocked vision results and a simulated NXT. Run `make esp32-test` for the fast host tests or `make esp32-qemu` with the emulator and firmware installed. SPI, Bluetooth and physical motors are the outstanding hardware integrations. The exact camera model still needs confirmation.
 
 The [demo ONNX decision model](demo/decision.onnx) implements the exact per-frame match. Its inputs are the OCR text encoded by `model_inputs` and the lowest line confidence. It returns zero for an unknown or uncertain card and a positive ID for a configured match. To export your own model, install the optional exporter dependency with `.venv/bin/python -m pip install onnx==1.23.2`, then run `.venv/bin/python decision_model.py local.json decision.onnx`. The model has been tested on replay data. Camera deployment requires an OCR runtime and a processor that supports the model's operators.
 
-### Current prototype
+### RealSense prototype with a separate host
 
 The software currently targets an **Intel RealSense D415 or D435** attached to a separate Linux computer. Those cameras compute stereo depth onboard and stream images over USB. The Linux computer reads the RGB stream, recognizes the card, and drives the NXT over its USB cable. Running recognition on a standalone camera and controlling the brick directly still need implementation and bench testing. [RealSense D400 datasheet](https://www.realsenseai.com/wp-content/uploads/2026/03/RealSense-D400-Series-Datasheet-Mar-2026.pdf)
 
