@@ -1,6 +1,6 @@
 # Devin Mindstorms permission clicker
 
-When Devin asks permission to run a command, it pauses until you answer. If the same request keeps coming up, you have to return to the keyboard each time. This project lets you teach a robot which permission cards it can approve for you.
+Say you ask Devin to run the tests and turn to a code review. When Devin asks for permission to run the same test command you approved yesterday, you have to put the review down, answer the request, and find your place again. If you've stepped away from your desk, you might come back an hour later expecting results and find that the tests never started. This project lets you choose which recurring permission cards a robot can approve for you.
 
 On a managed MacBook where you can't install a helper app, the robot can read the prompt and press the keys from outside the laptop. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
 
