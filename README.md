@@ -1,6 +1,6 @@
-# Mindstorms permission clicker
+# Devin Mindstorms permission clicker
 
-An external camera reads the MacBook's screen. A separate Linux computer runs Tesseract's neural-network OCR and drives a LEGO Mindstorms NXT over USB. Two NXT motors physically press **Option–Enter** on a real keyboard paired with the MacBook.
+Repeated Devin permission prompts can interrupt your workflow, and managed corporate laptops often restrict software installation. This project puts the whole setup outside the MacBook. An external camera watches the screen, a separate Linux computer recognizes configured Devin prompts, and a LEGO Mindstorms NXT robot physically presses **Option–Enter** on a real keyboard.
 
 ```text
 MacBook display ── light ──▶ RGB camera ── USB video ──▶ Linux host
