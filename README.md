@@ -1,6 +1,8 @@
 # Devin Mindstorms permission clicker
 
-Repeated Devin permission prompts can interrupt your workflow, and managed corporate laptops often restrict software installation. This project puts the whole setup outside the MacBook. An external camera watches the screen, a separate Linux computer recognizes configured Devin prompts, and a LEGO Mindstorms NXT robot physically presses **Option–Enter** on a real keyboard.
+When Devin asks permission to run a command, it pauses until you answer. If the same request keeps coming up, you have to return to the keyboard each time. This project lets you teach a robot which permission cards it can approve for you.
+
+On a managed MacBook where you can't install a helper app, the robot can read the prompt and press the keys from outside the laptop. An external camera watches the screen. When a separate Linux computer recognizes a card you've configured, it directs a LEGO Mindstorms NXT to press **Option–Enter** on a real keyboard connected to the MacBook.
 
 The setup is built around an **Intel RealSense D415 or D435**. Its stereo depth pair has two eyes. Add one human with two more and you've got **four eyes**. The screen reader uses the camera's dedicated RGB stream. [RealSense sensor layout](https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/)
 
