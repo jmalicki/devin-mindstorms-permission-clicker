@@ -25,6 +25,7 @@ def validate_crop(crop: list[float]) -> list[float]:
 
 
 Crop = Annotated[list[float], AfterValidator(validate_crop)]
+MIN_OCR_CONFIDENCE = 0.70
 
 
 @dataclass(frozen=True)

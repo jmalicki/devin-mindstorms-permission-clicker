@@ -15,7 +15,14 @@ from typing import TYPE_CHECKING, ContextManager, Protocol
 
 from camera import Camera, OCRLine, crop_frame, read_image, recognize, recognize_card
 from card_layout import CardLayout, CardLocator
-from settings import CameraSettings, Motors, Screen, ScreenView, Stroke
+from settings import (
+    MIN_OCR_CONFIDENCE,
+    CameraSettings,
+    Motors,
+    Screen,
+    ScreenView,
+    Stroke,
+)
 
 if TYPE_CHECKING:
     from cv2.typing import MatLike
@@ -115,7 +122,7 @@ def axes(brick: Brick, settings: Motors) -> tuple[Axis, Axis]:
 
 
 def recognized_text(lines: Sequence[OCRLine] | None) -> tuple[str, ...] | None:
-    if not lines or any(line["confidence"] < 0.70 for line in lines):
+    if not lines or any(not MIN_OCR_CONFIDENCE <= line["confidence"] <= 1 for line in lines):
         return None
     return tuple(line["text"] for line in lines)
 

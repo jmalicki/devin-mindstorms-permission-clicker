@@ -4,6 +4,10 @@ You ask [Devin](https://devin.ai/), a coding agent, to run the tests while you r
 
 On some corporate-managed MacBooks, you can't install a helper app. The goal is to use just a camera and a LEGO Mindstorms NXT. The camera recognizes a configured card and tells the NXT to press **Option–Enter** on a real keyboard. This requires a camera that can boot its own recognition program and communicate directly with the brick.
 
+In the intended two-device design, the camera locates the card, reads the complete command, checks it against the configured cards, and confirms the same card across fresh frames. The NXT handles the motor sequence and encoder feedback. The link between them needs to support a fresh confirmation after Option goes down and before Enter is tapped.
+
+The [demo ONNX decision model](demo/decision.onnx) implements the exact per-frame match. Its inputs are the OCR text encoded by `model_inputs` and the lowest line confidence. It returns zero for an unknown or uncertain card and a positive ID for a configured match. To export your own model, install the optional exporter dependency with `.venv/bin/python -m pip install onnx==1.23.2`, then run `.venv/bin/python decision_model.py local.json decision.onnx`. The model has been tested on replay data. Camera deployment requires an OCR runtime and a processor that supports the model's operators.
+
 ### Current prototype
 
 The software currently targets an **Intel RealSense D415 or D435** attached to a separate Linux computer. Those cameras compute stereo depth onboard and stream images over USB. The Linux computer reads the RGB stream, recognizes the card, and drives the NXT over its USB cable. Running recognition on a standalone camera and controlling the brick directly still need implementation and bench testing. [RealSense D400 datasheet](https://www.realsenseai.com/wp-content/uploads/2026/03/RealSense-D400-Series-Datasheet-Mar-2026.pdf)
